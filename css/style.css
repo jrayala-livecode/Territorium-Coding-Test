@@ -42,4 +42,79 @@ body {
     background-color: #003049;
 }
 
+#navbar {
+    text-align: center;
+    background-color: var(--bs-border-color-translucent);
+    position: sticky;
+    top: 0;
+}
 
+.nav-link{
+    color: white !important;
+}
+
+.nav-link .disabled {
+    color: grey !important;
+}
+
+#main-section{
+    position: relative;
+    text-align: center;
+    color: white;
+}
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#main-section > .bg {
+    flex-shrink: 0;
+    height: auto;
+    width: 100%;
+    z-index: -1;
+    opacity: 0.4;
+    left: 0;
+    top: 0;
+    position: relative;
+    min-height: 40vh;
+}
+
+#where {
+    padding-top: 3em;
+    background-color: var(--bs-blue);
+    padding-bottom: 3em;   
+    min-height: 60vh;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-wrap: nowrap;
+}
+#when {
+    padding-top: 3em;
+    background-color: var(--bs-dark);
+    padding-bottom: 3em;   
+    min-height: 60vh;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-wrap: nowrap;
+}
+
+.card {
+    background-color: var(--bs-yellow);
+}
+
+label {
+    color: var(--bs-white);
+}
+
+#who {
+    background-color: var(--bs-gray-400);
+}
+
+footer{
+    background-color: var(--bs-blue);
+}

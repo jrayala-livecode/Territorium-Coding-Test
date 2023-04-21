@@ -12,7 +12,7 @@ class MusicFestivalAttendant {
 
     public function __construct($postData, $pdo) {
         $this->name = $this->sanitize($postData['name']);
-        $this->email = $this->sanitize($postData['email']);
+        $this->email = $postData['email'];
         $this->age = $this->sanitize($postData['age']);
         $this->gender = $this->sanitize($postData['gender']);
         $this->nationality = $this->sanitize($postData['nationality']);
@@ -33,6 +33,10 @@ class MusicFestivalAttendant {
 
         // Return sanitized input
         return $output;
+    }
+
+    public function getId() {
+        return $this->id;
     }
 
     public function getName() {
@@ -68,7 +72,7 @@ class MusicFestivalAttendant {
         $stmt->bindParam(':age', $this->age);
         $stmt->bindParam(':gender', $this->gender);
         $stmt->bindParam(':nationality', $this->nationality);
-        $stmt->bindParam(':ticketType', $this->ticketType);
+        $stmt->bindParam(':ticket_type', $this->ticketType);
         $stmt->bindParam(':id', $this->id);
         $stmt->execute();
     }
@@ -95,18 +99,73 @@ class MusicFestivalAttendant {
         return true;
     }
 
+    public function getAttendantByEmail() {
+        $stmt = $this->pdo->prepare('SELECT * FROM attendants WHERE email = :email');
+        $stmt->bindParam(':email', $this->email);
+        $stmt->execute();
+    
+        $attendant = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if (!$attendant) {
+            return false;
+        }
+    
+        $this->id = $attendant['id'];
+        $this->name = $attendant['name'];
+        $this->email = $attendant['email'];
+        $this->age = $attendant['age'];
+        $this->gender = $attendant['gender'];
+        $this->nationality = $attendant['nationality'];
+        $this->ticketType = $attendant['ticket_type'];
+    
+        return true;
+    }
+
+    public function getAllAttendants() {
+        $stmt = $this->pdo->query('SELECT * FROM attendants');
+        $attendantsData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        $attendants = array();
+        foreach ($attendantsData as $attendantData) {
+            $attendant = new MusicFestivalAttendant([],$this->pdo);
+            $attendant->setData($attendantData);
+            $attendants[] = array(
+                'id' => $attendant->getId(),
+                'name' => $attendant->getName(),
+                'email' => $attendant->getEmail(),
+                'age' => $attendant->getAge(),
+                'gender' => $attendant->getGender(),
+                'nationality' => $attendant->getNationality(),
+                'ticket_type' => $attendant->getTicketType()
+            );
+        }
+    
+        return $attendants;
+    }
+
+    public function setData($data) {
+        $this->id = $data['id'];
+        $this->name = $data['name'];
+        $this->email = $data['email'];
+        $this->age = $data['age'];
+        $this->gender = $data['gender'];
+        $this->nationality = $data['nationality'];
+        $this->ticketType = $data['ticket_type'];
+    }
+
     public function create()
     {
         // Insert a new record into the database with the current object data
         
-        $stmt = $this->pdo->prepare('INSERT INTO attendants (name, email, age, gender, nationality, ticket_type) VALUES (:name, :email, :age, :gender, :nationality, :ticketType)');
+        $stmt = $this->pdo->prepare('INSERT INTO attendants (name, email, age, gender, nationality, ticket_type) VALUES (:name, :email, :age, :gender, :nationality, :ticket_type)');
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':age', $this->age);
         $stmt->bindParam(':gender', $this->gender);
         $stmt->bindParam(':nationality', $this->nationality);
-        $stmt->bindParam(':ticketType', $this->ticketType);
+        $stmt->bindParam(':ticket_type', $this->ticketType);
         $stmt->execute();
+
         
         // Set the object ID to the ID of the newly created record
         $this->id = $this->pdo->lastInsertId();
